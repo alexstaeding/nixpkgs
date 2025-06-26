@@ -4529,6 +4529,8 @@ let
 
       sysdig.sysdig-vscode-ext = callPackage ./sysdig.sysdig-vscode-ext { };
 
+      t3dotgg.vsc-material-theme-but-i-wont-sue-you = callPackage ./t3dotgg.vsc-material-theme-but-i-wont-sue-you {};
+
       tabnine.tabnine-vscode = buildVscodeMarketplaceExtension {
         mktplcRef = {
           name = "tabnine-vscode";
