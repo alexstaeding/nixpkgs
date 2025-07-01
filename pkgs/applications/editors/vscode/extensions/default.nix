@@ -1137,6 +1137,8 @@ let
         };
       };
 
+      dafny-lang.ide-vscode = callPackage ./dafny-lang.ide-vscode {};
+
       danielgavin.ols = buildVscodeMarketplaceExtension {
         mktplcRef = {
           publisher = "DanielGavin";
