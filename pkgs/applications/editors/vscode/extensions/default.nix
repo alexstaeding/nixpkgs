@@ -373,6 +373,8 @@ let
         };
       };
 
+      arturock.gitstash = callPackage ./arturock.gitstash { };
+
       asciidoctor.asciidoctor-vscode = callPackage ./asciidoctor.asciidoctor-vscode { };
 
       asdine.cue = buildVscodeMarketplaceExtension {
