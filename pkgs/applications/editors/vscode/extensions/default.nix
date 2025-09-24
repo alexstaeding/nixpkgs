@@ -4022,6 +4022,8 @@ let
 
       saoudrizwan.claude-dev = callPackage ./saoudrizwan.claude-dev { };
 
+      Soaibuzzaman.smt-z3 = callPackage ./Soaibuzzaman.smt-z3 { };
+
       sainnhe.gruvbox-material = buildVscodeMarketplaceExtension {
         mktplcRef = {
           name = "gruvbox-material";
