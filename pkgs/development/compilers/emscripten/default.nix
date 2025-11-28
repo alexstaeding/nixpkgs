@@ -56,8 +56,13 @@ stdenv.mkDerivation rec {
     makeWrapper
     python3
   ];
+
   buildInputs = [
     nodejs
+  ];
+
+  patches = [
+    ./0001-Remove-unreleased-no-stack-first-flag.patch
   ];
 
   buildPhase = ''
