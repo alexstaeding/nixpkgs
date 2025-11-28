@@ -64,6 +64,7 @@ stdenv.mkDerivation rec {
     runHook preBuild
 
     patchShebangs .
+    patchShebangs *.py
 
     # emscripten 4.0.12 requires LLVM tip-of-tree instead of LLVM 21
     sed -i -e "s/EXPECTED_LLVM_VERSION = 22/EXPECTED_LLVM_VERSION = 21.1/g" tools/shared.py
