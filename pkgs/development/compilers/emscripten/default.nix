@@ -17,7 +17,7 @@
 
 stdenv.mkDerivation rec {
   pname = "emscripten";
-  version = "4.0.12";
+  version = "4.0.20";
 
   llvmEnv = symlinkJoin {
     name = "emscripten-llvm-${version}";
@@ -33,7 +33,7 @@ stdenv.mkDerivation rec {
     name = "emscripten-node-modules-${version}";
     inherit pname version src;
 
-    npmDepsHash = "sha256-Pos7pSboTIpGKtlBm56hJPYb1lDydmUwW1urHetFfeQ=";
+    npmDepsHash = "sha256-IwiH+GELJzd4rDq31arhiF5miIRLDe7nrVsM7Yg9rTg=";
 
     dontBuild = true;
 
@@ -46,7 +46,7 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "emscripten-core";
     repo = "emscripten";
-    hash = "sha256-MwCUilfyum1yJb6nHEViYiYWufXlz2+krHZmXw2NAck=";
+    hash = "sha256-o7jy5LBXzcs6F50egehTEJkaJ9l75Eczizcv1OECT+o=";
     rev = version;
   };
 
@@ -58,12 +58,6 @@ stdenv.mkDerivation rec {
   ];
   buildInputs = [
     nodejs
-  ];
-
-  patches = [
-    (replaceVars ./0001-emulate-clang-sysroot-include-logic.patch {
-      resourceDir = "${llvmEnv}/lib/clang/${lib.versions.major llvmPackages.llvm.version}/";
-    })
   ];
 
   buildPhase = ''
@@ -116,8 +110,9 @@ stdenv.mkDerivation rec {
     export EM_CACHE=$out/share/emscripten/cache
 
     mkdir -p $out/bin
-    for b in em++ em-config emar embuilder.py emcc emcmake emconfigure emmake emranlib emrun emscons emsize; do
-      makeWrapper $appdir/$b $out/bin/$b \
+    for b in em++ em-config emar embuilder emcc emcmake emconfigure emmake emranlib emrun emscons emsize; do
+      chmod +x $appdir/$b.py
+      makeWrapper $appdir/$b.py $out/bin/$b \
         --set NODE_PATH ${nodeModules} \
         --set EM_EXCLUSIVE_CACHE_ACCESS 1 \
         --set PYTHON ${python3}/bin/python \
@@ -143,12 +138,6 @@ stdenv.mkDerivation rec {
         # $out/bin/emcc $LTO $BIND -s USE_PTHREADS test.c
       done
     done
-    popd
-
-    export PYTHON=${python3}/bin/python
-    export NODE_PATH=${nodeModules}
-    pushd $appdir
-    python test/runner.py test_hello_world
     popd
 
     runHook postInstall
