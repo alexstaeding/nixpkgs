@@ -63,8 +63,11 @@ stdenv.mkDerivation rec {
   buildPhase = ''
     runHook preBuild
 
+    # these two files are not marked as executable upstream,
+    # but it is necessary for them to be detected by patchShebangs
+    chmod +x emcc.py emrun.py
+
     patchShebangs .
-    patchShebangs *.py
 
     # emscripten 4.0.12 requires LLVM tip-of-tree instead of LLVM 21
     sed -i -e "s/EXPECTED_LLVM_VERSION = 22/EXPECTED_LLVM_VERSION = 21.1/g" tools/shared.py
