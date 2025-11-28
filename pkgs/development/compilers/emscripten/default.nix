@@ -62,6 +62,9 @@ stdenv.mkDerivation rec {
 
   buildPhase = ''
     runHook preBuild
+    
+    echo "Creating entrypoints"
+    ${python3}/bin/python tools/maint/create_entry_points.py
 
     # these two files are not marked as executable upstream,
     # but it is necessary for them to be detected by patchShebangs
