@@ -136,20 +136,27 @@ stdenv.mkDerivation rec {
     echo 'int __main_argc_argv( int a, int b ) { return 42; }' >test.c
     for LTO in -flto ""; do
       for BIND in "" "--bind"; do
-        # starting with emscripten 3.1.32+,
-        # if pthreads and relocatable are both used,
-        # _emscripten_thread_exit_joinable must be exported
-        # (see https://github.com/emscripten-core/emscripten/pull/18376)
-        # TODO: get library cache to build with both enabled and function exported
-        $out/bin/emcc $LTO $BIND test.c
-        $out/bin/emcc $LTO $BIND -s RELOCATABLE test.c
-        # starting with emscripten 3.1.48+,
-        # to use pthreads, _emscripten_check_mailbox must be exported
-        # (see https://github.com/emscripten-core/emscripten/pull/20604)
-        # TODO: get library cache to build with pthreads at all
-        # $out/bin/emcc $LTO $BIND -s USE_PTHREADS test.c
+        for PIC in "" "-fPIC"; do
+          # starting with emscripten 3.1.32+,
+          # if pthreads and relocatable are both used,
+          # _emscripten_thread_exit_joinable must be exported
+          # (see https://github.com/emscripten-core/emscripten/pull/18376)
+          # TODO: get library cache to build with both enabled and function exported
+          $out/bin/emcc $LTO $BIND $PIC test.c
+          $out/bin/emcc $LTO $BIND $PIC -s RELOCATABLE test.c
+          # starting with emscripten 3.1.48+,
+          # to use pthreads, _emscripten_check_mailbox must be exported
+          # (see https://github.com/emscripten-core/emscripten/pull/20604)
+          # TODO: get library cache to build with pthreads at all
+          # $out/bin/emcc $LTO $BIND -s USE_PTHREADS test.c
+        done
       done
     done
+
+    # Also build the pthread + PIC variants that Lean needs
+    $out/bin/emcc -fPIC -pthread test.c
+    $out/bin/emcc -fPIC -pthread -flto test.c
+
     popd
 
     runHook postInstall
